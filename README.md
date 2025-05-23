@@ -11,7 +11,7 @@
   In our Hangman game project, each letter of the alphabet is displayed as a button on the screen. This setup lets players simply click on their guesses instead of      typing them out. The buttons are easy to see and clearly labeled, making it simple to identify which letters are still available. The game randomly selects a word     from a predefined list for each round, ensuring a fresh challenge every time. When a player clicks on a button, their guess is registered, and the game updates        accordingly. If they guess correctly, the corresponding letters appear in the word, while incorrect guesses add to the hangman graphic. 
 
 ##Group Members
-  1. Henos Tadesse.............UGR/9772/17
+  1. Henos Tadesse............UGR/9772/17
   2. Lydia Ayele...............UGR/8704/17
   3. Kidus Yared...............UGR/2659/17
   4. Khalid Sefyu..............UGR/9391/17
