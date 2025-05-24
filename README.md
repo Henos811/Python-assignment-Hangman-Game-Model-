@@ -5,15 +5,12 @@
 
 ## Instructions on how to set up and run the project
   1. Install Python: Ensure that Python is installed on your PC. This is the primary programming language used for the project.
-  2. Install Pygame: You need to install the Pygame library. You can do this easily via pip by running the following command in your terminal: (pip install pygame)
-  
-To clone this repo:
-  Activate virtual environment:
-      python -m venv .venv
-      .\.venv\Scripts\activate  # Windows
-      source .venv/bin/activate # Mac/Linux
-To install dependencies type :
-  pip install -r requirements.txt
+  2. To set up your virtual environment type this in your terminal:
+    - python -m venv .venv
+        .\.venv\Scripts\activate  # Windows
+        source .venv/bin/activate # Mac/Linux
+  3. To install dependencies type this in your terminal:
+    - pip install -r requirements.txt
   
 
 
