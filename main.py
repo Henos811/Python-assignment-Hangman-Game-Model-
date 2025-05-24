@@ -5,3 +5,4 @@ pygame.init()
 WIDTH = 800
 HEIGHT = 500
 pygame.display.set_mode((WIDTH, HEIGHT))
+print(99999)
