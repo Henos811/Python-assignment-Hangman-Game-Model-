@@ -5,4 +5,4 @@ pygame.init()
 WIDTH = 800
 HEIGHT = 500
 pygame.display.set_mode((WIDTH, HEIGHT))
-print(99999)
+pygame.display.set_caption('Hangman Game Model')
