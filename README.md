@@ -6,6 +6,16 @@
 ## Instructions on how to set up and run the project
   1. Install Python: Ensure that Python is installed on your PC. This is the primary programming language used for the project.
   2. Install Pygame: You need to install the Pygame library. You can do this easily via pip by running the following command in your terminal: (pip install pygame)
+  
+To clone this repo:
+  Activate virtual environment:
+      python -m venv .venv
+      .\.venv\Scripts\activate  # Windows
+      source .venv/bin/activate # Mac/Linux
+To install dependencies type :
+  pip install -r requirements.txt
+  
+
 
 ## Features
   In our Hangman game project, each letter of the alphabet is displayed as a button on the screen. This setup lets players simply click on their guesses instead of      typing them out. The buttons are easy to see and clearly labeled, making it simple to identify which letters are still available. The game randomly selects a word     from a predefined list for each round, ensuring a fresh challenge every time. When a player clicks on a button, their guess is registered, and the game updates        accordingly. If they guess correctly, the corresponding letters appear in the word, while incorrect guesses add to the hangman graphic. 
