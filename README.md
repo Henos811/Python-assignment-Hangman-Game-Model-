@@ -1,7 +1,8 @@
 # Python-assignment-Hangman-Game-Model (Section 18)
 
-# Description
-  This project is a fun take on the classic Hangman game, where players guess letters to uncover a hidden word. The game will have a simple and user-friendly            interface, showing the word as a series of blanks and updating with each correct guess. Players will need to guess within a limited number of tries.
+# 📜 Description
+This project is a fun take on the classic Hangman game, where players guess letters to uncover a hidden word. The game features a simple and user-friendly interface powered by Pygame, displaying the word as a series of blanks and updating with each correct guess.
+Players will select letters using interactive buttons, aiming to solve the word within a limited number of tries before the Hangman figure is fully drawn. The game includes random word selection for fresh challenges in every round and visually tracks incorrect guesses through a dynamic Hangman graphic.
 
 # Complete Project Setup Guide 
   ## 1. System Requirements  
