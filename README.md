@@ -20,40 +20,36 @@
 
   ## **🐍 3. Set Up a Python Virtual Environment**  
 
-    ### **Create & Activate the Virtual Environment**  
-    - **Windows (PowerShell):**  
+  ### **Create & Activate the Virtual Environment**  
+  #### **Windows (PowerShell):**
       python -m venv .venv
       .\.venv\Scripts\activate
-
-    - **Mac/Linux (Terminal):**  
+    
+  #### **Mac/Linux (Terminal):**
+    
       python3 -m venv .venv
       source .venv/bin/activate
-      
-    ✅ **Success?** You should see `(.venv)` in your terminal prompt.  
+    
+  ✅ **Success?** You should see `(.venv)` in your terminal prompt.  
 
 
   ## **📦 4. Install Dependencies**  
   The project uses `requirements.txt` to manage dependencies.  
 
-    1. Make sure your virtual environment is **activated**.  
-    2. Run:  
+  1. Make sure your virtual environment is **activated**.  
+  2. Run: 
+      ```
       pip install -r requirements.txt
-      *(This installs Pygame and all other required packages.)*  
-
+      ````
+      (This installs Pygame and all other required packages.) 
 
   ## **🚀 6. Run the Project**  
   1. Ensure the virtual environment is **activated**.  
-  2. Run the main script:  
-      python main.py 
+  2. Run the main script:   ```` python main.py ````
 
 
-  ## **❌ Common Mistakes to Avoid**  
-  - **Don’t commit `.venv/`** (add it to `.gitignore`).  
-  - **Don’t modify `requirements.txt` manually** (always use `pip freeze`).  
-  
-
-# Features
-  In our Hangman game project, each letter of the alphabet is displayed as a button on the screen. This setup lets players simply click on their guesses instead of      typing them out. The buttons are easy to see and clearly labeled, making it simple to identify which letters are still available. The game randomly selects a word     from a predefined list for each round, ensuring a fresh challenge every time. When a player clicks on a button, their guess is registered, and the game updates        accordingly. If they guess correctly, the corresponding letters appear in the word, while incorrect guesses add to the hangman graphic. 
+# ✨ Features
+  In our Hangman game project, each letter of the alphabet is displayed as a button on the screen. This setup lets players simply click on their guesses instead of   typing them out. The buttons are easy to see and clearly labeled, making it simple to identify which letters are still available. The game randomly selects a       word from a predefined list for each round, ensuring a fresh challenge every time. When a player clicks on a button, their guess is registered, and the game        updates accordingly. If they guess correctly, the corresponding letters appear in the word, while incorrect guesses add to the hangman graphic. 
 
 # Group Members
   1. Henos Tadesse........UGR/9772/17
