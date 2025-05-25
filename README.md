@@ -12,11 +12,12 @@
   * (Recommended: 64-bit OS for better compatibility.)*  
 
   ## **📥 2. Clone the Repository**  
-    1. Open **Terminal (Mac/Linux)** or **Command Prompt/PowerShell (Windows)**.  
-    2. Run:  
+  1. Open `Terminal (Mac/Linux)` or `Command Prompt/PowerShell (Windows)`
+  2. Run:
+      ```
       git clone https://github.com/Henos811/Python-assignment-Hangman-Game-Model-.git
       cd Python-assignment-Hangman-Game-Model-
-      
+      ```
 
   ## **🐍 3. Set Up a Python Virtual Environment**  
 
