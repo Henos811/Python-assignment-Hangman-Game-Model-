@@ -7,5 +7,3 @@ HEIGHT = 500
 pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Hangman Game Model')
 
-FPS = 60
-clock = pygame.time.Clock(FPS)
