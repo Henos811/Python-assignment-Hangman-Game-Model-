@@ -60,54 +60,95 @@ word_list = [
     "ADRENALINE", "INVINCIBLE", "CELEBRATION"
 ]
 
-# Colors
-BG_COLOR = (255, 243, 227)
-BLACK = (0, 0, 0)
-
 # Game state
 hangman_status = 0
-word = random.choice(word_list)
+word = ""
 guessed = []
+
+
+# Hangman Drawing Function 
+def draw_hangman(status):
+    offset_x = 50
+    offset_y = 100
+    
+#static_drawings
+    pygame.draw.line(window, BLACK, (offset_x, offset_y + 250), (offset_x + 150, offset_y + 250), 5)
+    pygame.draw.line(window, BLACK, (offset_x + 75, offset_y + 250), (offset_x + 75, offset_y), 5)
+    pygame.draw.line(window, BLACK, (offset_x + 75, offset_y), (offset_x + 175, offset_y), 5)         
+# for each mistake draw the hang man
+    if status >= 1:
+        start_point = (offset_x + 75, offset_y + 20)  
+        end_point = (offset_x + 95, offset_y)           
+        pygame.draw.line(window, BLACK, start_point, end_point, 5)
+
+    if status >= 2:
+        pygame.draw.line(window, BLACK, (offset_x + 175, offset_y), (offset_x + 175, offset_y + 30), 5)
+
+    if status >= 3:
+        pygame.draw.circle(window, BLACK, (offset_x + 175, offset_y + 30 + 25), 25, 5)
+
+    if status >= 4:
+        pygame.draw.line(window, BLACK, (offset_x + 175, offset_y + 30 + 25 + 25), (offset_x + 175, offset_y + 30 + 25 + 90), 5)
+
+    if status >= 5:
+        pygame.draw.line(window, BLACK,
+                         (offset_x + 175, offset_y + 30 + 25 + 40),
+                         (offset_x + 175 - 30, offset_y + 30 + 25 + 70), 5)
+    
+    if status >= 6:
+        pygame.draw.line(window, BLACK,
+                         (offset_x + 175, offset_y + 30 + 25 + 40),
+                         (offset_x + 175 + 30, offset_y + 30 + 25 + 70), 5)
+        
+    if status >= 7:
+        pygame.draw.line(window, BLACK,
+                         (offset_x + 175, offset_y + 30 + 25 + 90),
+                         (offset_x + 175 - 20, offset_y + 30 + 25 + 130), 5)
+    
+    if status >= 8:
+        pygame.draw.line(window, BLACK,
+                         (offset_x + 175, offset_y + 30 + 25 + 90),
+                         (offset_x + 175 + 20, offset_y + 30 + 25 + 130), 5)
+        
+# Drawing Game UI Elements
+def draw_score():
+    score_text = LETTER_FONT.render(f"Wins: {wins}  Losses: {losses}", True, BLACK)
+    window.blit(score_text, (20, 20))
 
 def draw():
     window.fill(BG_COLOR)
+    draw_score()
+
+    #title
+    title_text = TITLE_FONT.render("HANGMAN", 1, BLACK)
+    window.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 20))
     
-    text = TITLE_FONT.render("HANGMAN", 1, BLACK)
-    window.blit(text, (WIDTH / 2 - text.get_width() / 2, 20))
+    #secret word display underscore or guessed
+    display_word = "".join([letter if letter in guessed else "_" for letter in word])
+    word_text = WORD_FONT.render(display_word, 1, BLACK)
+    window.blit(word_text, (400, 250))
 
-    display_word = ""
-    for letter in word:
-        if letter in guessed:
-            display_word += letter + " "
-        else:
-            display_word += "_ "
+    #draw hangman
+    draw_hangman(hangman_status)
 
-    text = WORD_FONT.render(display_word, 1, BLACK)
-    window.blit(text, (400, 200))
-
-    for letter in letters:
-        x, y, ltr, visible = letter
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-
-    for letter in letters:
-        x, y, ltr, visible = letter
+    #letter buttons and hover effect
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    for x, y, ltr, visible in letters:
         if visible:
             distance = math.hypot(mouse_x - x, mouse_y - y)
-            is_hovered = distance <= BUTTON_RADIUS
-
+            is_hovered = (distance <= BUTTON_RADIUS)
             if is_hovered:
-                pygame.draw.circle(window, BLACK, (x, y), BUTTON_RADIUS)
-                text_color = (255, 255, 255)
+                pygame.draw.circle(window, BLACK, (x, y), BUTTON_RADIUS, 0)
+                letter_render = LETTER_FONT.render(ltr, True, White)
             else:
                 pygame.draw.circle(window, BLACK, (x, y), BUTTON_RADIUS, 3)
+                letter_render = LETTER_FONT.render(ltr, True, BLACK)
                 text_color = BLACK
-
-            text = LETTER_FONT.render(ltr, 1, text_color)
-            window.blit(text, (x - text.get_width() / 2, y - text.get_height() / 2))
-
-    window.blit(images[hangman_status], (150, 150))
+            window.blit(letter_render, (x - letter_render.get_width() // 2, y - letter_render.get_height() // 2))
+            
     pygame.display.update()
 
+#end game display
 def display_message(message, reveal_word=None):
     main_text = WORD_FONT.render(message, 1, BLACK)
     word_text = None
