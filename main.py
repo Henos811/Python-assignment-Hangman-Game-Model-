@@ -150,13 +150,17 @@ def draw():
 
 #end game display
 def display_message(message, reveal_word=None):
+    global wins, losses
     main_text = WORD_FONT.render(message, 1, BLACK)
-    word_text = None
-    if reveal_word:
-        word_text = WORD_FONT.render(f"The word was: {reveal_word}", 1, BLACK)
+    word_text = WORD_FONT.render(f"The word was: {reveal_word}", True, BLACK) if reveal_word else None
+    
+    button_width, button_height, gap_between = 130, 50, 20
+    total_width = 3 * button_width + 2 * gap_between
+    start_x_btn = WIDTH // 2 - total_width // 2
 
-    restart_rect = pygame.Rect(WIDTH/2 - 150, HEIGHT/2 + 80, 130, 50)
-    quit_rect = pygame.Rect(WIDTH/2 + 20, HEIGHT/2 + 80, 130, 50)
+    restart_rect = pygame.Rect(start_x_btn, HEIGHT // 2 + 80, button_width, button_height)
+    change_rect  = pygame.Rect(start_x_btn + button_width + gap_between, HEIGHT // 2 + 80, button_width, button_height)
+    quit_rect    = pygame.Rect(start_x_btn + 2 * (button_width + gap_between), HEIGHT // 2 + 80, button_width, button_height)
     
 
     while True:
@@ -165,26 +169,31 @@ def display_message(message, reveal_word=None):
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
         # main message
-        window.blit(main_text, (WIDTH/2 - main_text.get_width() / 2, HEIGHT / 2 - main_text.get_height() / 2))
+        window.blit(main_text, (WIDTH // 2 - main_text.get_width() // 2, HEIGHT // 2 - main_text.get_height() // 2))
 
         # revealed word 
         if word_text:
-            window.blit(word_text, (WIDTH/2 - word_text.get_width() / 2, 100))
+            window.blit(word_text, (WIDTH // 2 - word_text.get_width() // 2, 100))
 
         # Buttons
         restart_hover = restart_rect.collidepoint(mouse_x, mouse_y)
+        change_hover  = change_rect.collidepoint(mouse_x, mouse_y)
         quit_hover = quit_rect.collidepoint(mouse_x, mouse_y)
 
         pygame.draw.rect(window, BLACK, restart_rect, border_radius=10, width=0 if restart_hover else 3)
+        pygame.draw.rect(window, BLACK, change_rect,  border_radius=10, width=0 if change_hover else 3)
         pygame.draw.rect(window, BLACK, quit_rect, border_radius=10, width=0 if quit_hover else 3)
 
         restart_text = LETTER_FONT.render("Restart", 1, (255, 255, 255) if restart_hover else BLACK)
+        change_text  = LETTER_FONT.render("Difficulty", True, (255,255,255) if change_hover else BLACK)
         quit_text = LETTER_FONT.render("Quit", 1, (255, 255, 255) if quit_hover else BLACK)
 
-        window.blit(restart_text, (restart_rect.x + (restart_rect.width - restart_text.get_width()) / 2,
-                                   restart_rect.y + (restart_rect.height - restart_text.get_height()) / 2))
-        window.blit(quit_text, (quit_rect.x + (quit_rect.width - quit_text.get_width()) / 2,
-                                quit_rect.y + (quit_rect.height - quit_text.get_height()) / 2))
+        window.blit(restart_text, (restart_rect.x + (restart_rect.width - restart_text.get_width()) // 2,
+                                   restart_rect.y + (restart_rect.height - restart_text.get_height()) // 2))
+        window.blit(change_text,  (change_rect.x + (change_rect.width - change_text.get_width()) // 2,
+                                   change_rect.y + (change_rect.height - change_text.get_height()) // 2))
+        window.blit(quit_text, (quit_rect.x + (quit_rect.width - quit_text.get_width()) // 2,
+                                quit_rect.y + (quit_rect.height - quit_text.get_height()) // 2))
 
         
         pygame.display.update()
@@ -196,17 +205,63 @@ def display_message(message, reveal_word=None):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if restart_rect.collidepoint(event.pos):
                     return "restart"
+                elif change_rect.collidepoint(event.pos):
+                    return "change"
                 elif quit_rect.collidepoint(event.pos):
                     return "quit"
-                
 
+#Difficulty
+def main_menu():
+    selecting = True
+    while selecting:
+        window.fill(BG_COLOR)
+        game_title = TITLE_FONT.render("HANGMAN GAME", True, BLACK)
+        window.blit(game_title, (WIDTH // 2 - game_title.get_width() // 2, 20))
+        menu_title = WORD_FONT.render("Select Word Complexity", True, BLACK)
+        window.blit(menu_title, (WIDTH // 2 - menu_title.get_width() // 2, 120))
+        
+        easy_rect   = pygame.Rect(WIDTH // 2 - 230, 300, 150, 50)
+        medium_rect = pygame.Rect(WIDTH // 2 - 75, 300, 150, 50)
+        hard_rect   = pygame.Rect(WIDTH // 2 + 80, 300, 150, 50)
+        
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        for rect, text in [(easy_rect, "Easy"), (medium_rect, "Medium"), (hard_rect, "Hard")]:
+            hover = rect.collidepoint(mouse_x, mouse_y)
+            pygame.draw.rect(window, BLACK, rect, border_radius=10, width=0 if hover else 3)
+            label = LETTER_FONT.render(text, True, (255,255,255) if hover else BLACK)
+            window.blit(label, (rect.x + (rect.width - label.get_width()) // 2,
+                                rect.y + (rect.height - label.get_height()) // 2))
+        
+        pygame.display.update()
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return None
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if easy_rect.collidepoint(event.pos):
+                    return "easy"
+                elif medium_rect.collidepoint(event.pos):
+                    return "medium"
+                elif hard_rect.collidepoint(event.pos):
+                    return "hard"
 
+#Main game loop
 def run_game():
-    global hangman_status, guessed, word, letters
+    global hangman_status, guessed, word, letters, wins, losses, difficulty
 
     # Reset game
     hangman_status = 0
     guessed = []
+
+    if difficulty == "easy":
+        filtered_words = [w for w in word_list if len(w) <= 6]
+    elif difficulty == "medium":
+        filtered_words = [w for w in word_list if 7 <= len(w) <= 8]
+    elif difficulty == "hard":
+        filtered_words = [w for w in word_list if len(w) >= 9]
+    else:
+        filtered_words = word_list
+    
     word = random.choice(word_list)
     for letter in letters:
         letter[3] = True
@@ -221,36 +276,56 @@ def run_game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "quit"
+            if event.type == pygame.KEYDOWN:
+                if pygame.K_a <= event.key <= pygame.K_z:
+                    letter_char = chr(event.key).upper()
+                    if letter_char not in guessed:
+                        guessed.append(letter_char)
+                        if letter_char not in word:
+                            
+                            hangman_status += 1
             if event.type == pygame.MOUSEBUTTONDOWN:
                 cursor_x, cursor_y = pygame.mouse.get_pos()
                 for letter in letters:
                     x, y, ltr, visible = letter
                     if visible:
-                        dis = math.sqrt((x - cursor_x) ** 2 + (y - cursor_y) ** 2)
+                        dis = math.hypot(cursor_x - x, cursor_y - y)
                         if dis < BUTTON_RADIUS:
                             letter[3] = False
-                            guessed.append(ltr)
+                            if ltr not in guessed:
+                                guessed.append(ltr)
                             if ltr not in word:
                                 hangman_status += 1
 
         draw()
 
-        won = True
-        for letter in word:
-            if letter not in guessed:
-                won = False
-                break
+        if set(word).issubset(set(guessed)):
+            wins += 1
+            result = display_message("You Won!", reveal_word=word)
+            return result
 
-        if won:
-            return display_message("You Won!", reveal_word=word)
-        if hangman_status == 6:
-            return display_message("You Lost.", reveal_word=word)
-
+        if hangman_status >= max_mistakes:
+            losses += 1
+            result = display_message("You Lost.", reveal_word=word)
+            return result
+        
 def main():
+    global difficulty
+    selected = main_menu()
+    if selected is None:
+        return
+    else:
+        difficulty = selected
     while True:
         result = run_game()
         if result == "quit":
             break
+        elif result == "change":
+            new_diff = main_menu()
+            if new_diff is None:
+                break
+            else:
+                difficulty = new_diff
 
 main()
 pygame.quit()
