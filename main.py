@@ -124,7 +124,7 @@ def draw():
     window.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 20))
     
     #secret word display underscore or guessed
-    display_word = "".join([letter if letter in guessed else "_" for letter in word])
+    display_word = " ".join([letter if letter in guessed else "_" for letter in word])
     word_text = WORD_FONT.render(display_word, 1, BLACK)
     window.blit(word_text, (400, 250))
 
@@ -139,7 +139,7 @@ def draw():
             is_hovered = (distance <= BUTTON_RADIUS)
             if is_hovered:
                 pygame.draw.circle(window, BLACK, (x, y), BUTTON_RADIUS, 0)
-                letter_render = LETTER_FONT.render(ltr, True, White)
+                letter_render = LETTER_FONT.render(ltr, True, WHITE)
             else:
                 pygame.draw.circle(window, BLACK, (x, y), BUTTON_RADIUS, 3)
                 letter_render = LETTER_FONT.render(ltr, True, BLACK)
