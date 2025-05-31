@@ -258,7 +258,7 @@ def run_game():
     elif difficulty == "medium":
         filtered_words = [w for w in word_list if 7 <= len(w) <= 8]
     elif difficulty == "hard":
-        filtered_words = [w for w in word_list if len(w) >= 9]
+        filtered_words = [w for w in word_list if (len(w) >= 9 & len(w) <=12)]
     else:
         filtered_words = word_list
     
