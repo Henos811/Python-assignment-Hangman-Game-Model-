@@ -9,13 +9,19 @@ WIDTH = 1000
 HEIGHT = 700
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
-
-pygame.init()
-WIDTH = 1000
-HEIGHT = 700
-pygame.display.set_mode((WIDTH, HEIGHT))
-
 pygame.display.set_caption('Hangman Game Model')
+
+# Colors
+BG_COLOR = (255, 243, 227)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+
+
+#score global configuration
+max_mistakes = 8 
+wins = 0
+losses = 0
+difficulty = "medium"
 
 # Button setup
 BUTTON_RADIUS = 25
@@ -23,31 +29,35 @@ GAP = 15
 letters = []
 start_x = round((WIDTH - (BUTTON_RADIUS * 2 + GAP) * 13) / 2)
 start_y = 500
-A = 65
+A_ord = 65
 
 for i in range(26):
     x = start_x + GAP * 2 + ((BUTTON_RADIUS * 2 + GAP) * (i % 13))
     y = start_y + ((i // 13) * (GAP + BUTTON_RADIUS * 2))
-    letters.append([x, y, chr(A + i), True])
+    letters.append([x, y, chr(A_ord + i), True])
 
 # Fonts
-LETTER_FONT = pygame.font.SysFont("", 30)
+LETTER_FONT = pygame.font.SysFont("arial", 30)
 WORD_FONT = pygame.font.SysFont("comicsans", 60)
-TITLE_FONT = pygame.font.SysFont("snapitc", 70)
+TITLE_FONT = pygame.font.SysFont("snapitc", 80)
 
-
-# Load images
-images = []
-for i in range(7):
-    image = pygame.image.load("images/hangman" + str(i) + ".png")
-    images.append(image)
 
 # Word list
 word_list = [
-    "ELEPHANT", "SUNSHINE", "MOUNTAIN", "WATERFALL", "CHOCOLATE",
-    "ADVENTURE", "BUTTERFLY", "RAINBOW", "TELESCOPE", "JOURNEY",
-    "WHISPER", "VOLCANO", "GARDEN", "MYSTERY", "TREASURE",
-    "OCEAN", "FIREFLY", "HARMONY", "VICTORY", "WONDER"
+    # Easy words (length <= 6)
+    "APPLE", "HOUSE", "BRICK", "TABLE", "CHAIR", "WATER", "PLANT", "FRUIT", "MONEY",
+    "RIVER", "LIGHT", "SHINE", "GRACE", "CANDY", "BREAD", "SMILE", "HEART", "PRIDE",
+    "COAST", "CLOUD",
+    
+    # Medium words (7 <= length <= 8)
+    "HOSPITAL", "LIBRARY", "MONSTER", "BALANCE", "CANYONS", "DIAMOND", "HARBORS",
+    "CULTURE", "STREETS", "MYSTERY", "HORIZON", "BUTTONS", "FACTORY", "JOURNEY", "VOLCANO",
+    
+    # Hard words (length >= 9)
+    "CHOCOLATE", "ADVENTURE", "BUTTERFLY", "TELESCOPE", "CONTROLLER", "INTERNATIONAL",
+    "TRANQUILITY", "PHILOSOPHY", "CIRCUMSTANCE", "SENSATIONAL", "EXPERIENCE",
+    "NOTIFICATION", "CONNECTION", "DIVERSITY", "ELECTRICITY", "SUBMARINE",
+    "ADRENALINE", "INVINCIBLE", "CELEBRATION"
 ]
 
 # Colors
