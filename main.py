@@ -5,7 +5,7 @@ import random
 pygame.init()
 
 # Screen setup
-WIDTH = 1000
+WIDTH = 1500
 HEIGHT = 700
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -37,7 +37,7 @@ for i in range(26):
     letters.append([x, y, chr(A_ord + i), True])
 
 # Fonts
-LETTER_FONT = pygame.font.SysFont("arial", 30)
+LETTER_FONT = pygame.font.SysFont("tahoma", 30)
 WORD_FONT = pygame.font.SysFont("comicsans", 60)
 TITLE_FONT = pygame.font.SysFont("snapitc", 80)
 
@@ -68,13 +68,14 @@ guessed = []
 
 # Hangman Drawing Function 
 def draw_hangman(status):
-    offset_x = 50
-    offset_y = 100
+    offset_x = 80
+    offset_y = 200
     
 #static_drawings
     pygame.draw.line(window, BLACK, (offset_x, offset_y + 250), (offset_x + 150, offset_y + 250), 5)
     pygame.draw.line(window, BLACK, (offset_x + 75, offset_y + 250), (offset_x + 75, offset_y), 5)
-    pygame.draw.line(window, BLACK, (offset_x + 75, offset_y), (offset_x + 175, offset_y), 5)         
+    pygame.draw.line(window, BLACK, (offset_x + 75, offset_y), (offset_x + 175, offset_y), 5)     
+        
 # for each mistake draw the hang man
     if status >= 1:
         start_point = (offset_x + 75, offset_y + 20)  
@@ -126,7 +127,7 @@ def draw():
     #secret word display underscore or guessed
     display_word = " ".join([letter if letter in guessed else "_" for letter in word])
     word_text = WORD_FONT.render(display_word, 1, BLACK)
-    window.blit(word_text, (400, 250))
+    window.blit(word_text, ((WIDTH - word_text.get_width()) // 2, 250))
 
     #draw hangman
     draw_hangman(hangman_status)
@@ -154,7 +155,7 @@ def display_message(message, reveal_word=None):
     main_text = WORD_FONT.render(message, 1, BLACK)
     word_text = WORD_FONT.render(f"The word was: {reveal_word}", True, BLACK) if reveal_word else None
     
-    button_width, button_height, gap_between = 130, 50, 20
+    button_width, button_height, gap_between = 150, 50, 30
     total_width = 3 * button_width + 2 * gap_between
     start_x_btn = WIDTH // 2 - total_width // 2
 
@@ -218,12 +219,12 @@ def main_menu():
         game_title = TITLE_FONT.render("HANGMAN GAME", True, BLACK)
         window.blit(game_title, (WIDTH // 2 - game_title.get_width() // 2, 20))
         menu_title = WORD_FONT.render("Select Word Complexity", True, BLACK)
-        window.blit(menu_title, (WIDTH // 2 - menu_title.get_width() // 2, 120))
+        window.blit(menu_title, (WIDTH // 2 - menu_title.get_width() // 2, 250))
         
-        easy_rect   = pygame.Rect(WIDTH // 2 - 230, 300, 150, 50)
-        medium_rect = pygame.Rect(WIDTH // 2 - 75, 300, 150, 50)
-        hard_rect   = pygame.Rect(WIDTH // 2 + 80, 300, 150, 50)
-        
+        easy_rect   = pygame.Rect(WIDTH // 2 - 230, 400, 150, 50)
+        medium_rect = pygame.Rect(WIDTH // 2 - 50, 400, 150, 50)
+        hard_rect   = pygame.Rect(WIDTH // 2 + 130, 400, 150, 50)
+
         mouse_x, mouse_y = pygame.mouse.get_pos()
         for rect, text in [(easy_rect, "Easy"), (medium_rect, "Medium"), (hard_rect, "Hard")]:
             hover = rect.collidepoint(mouse_x, mouse_y)
