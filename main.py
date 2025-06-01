@@ -76,7 +76,7 @@ def draw_hangman(status):
     pygame.draw.line(window, BLACK, (offset_x + 75, offset_y + 250), (offset_x + 75, offset_y), 5)
     pygame.draw.line(window, BLACK, (offset_x + 75, offset_y), (offset_x + 175, offset_y), 5)     
         
-# for each mistake draw the hang man
+# for each mistake draw the hangman
     if status >= 1:
         start_point = (offset_x + 75, offset_y + 20)  
         end_point = (offset_x + 95, offset_y)           
