@@ -1,6 +1,7 @@
 import pygame
 import math
 import random
+import time
 
 pygame.init()
 
@@ -15,13 +16,22 @@ pygame.display.set_caption('Hangman Game Model')
 BG_COLOR = (255, 243, 227)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+ORANGE = (255, 165, 0)
 
 #score global configuration
 max_mistakes = 8 
 wins = 0
 losses = 0
 difficulty = "medium"
+
+# Timer configuration
+timer_limits = {
+    "easy": 180,    # 3 minutes
+    "medium": 120,  # 2 minutes
+    "hard": 90      # 1.5 minutes
+}
 
 # Button setup
 BUTTON_RADIUS = 25
@@ -40,7 +50,7 @@ for i in range(26):
 LETTER_FONT = pygame.font.SysFont("tahoma", 30)
 WORD_FONT = pygame.font.SysFont("comicsans", 60)
 TITLE_FONT = pygame.font.SysFont("snapitc", 80)
-
+TIMER_FONT = pygame.font.SysFont("arial", 40, bold=True)
 
 # Word list
 word_list = [
@@ -64,7 +74,27 @@ word_list = [
 hangman_status = 0
 word = ""
 guessed = []
+start_time = 0
+time_limit = 0
 
+# Timer functions
+def get_remaining_time():
+    elapsed = time.time() - start_time
+    remaining = max(0, time_limit - elapsed)
+    return remaining
+
+def format_time(seconds):
+    minutes = int(seconds // 60)
+    seconds = int(seconds % 60)
+    return f"{minutes:02d}:{seconds:02d}"
+
+def get_timer_color(remaining_time):
+    if remaining_time > time_limit * 0.5:
+        return GREEN
+    elif remaining_time > time_limit * 0.25:
+        return ORANGE
+    else:
+        return RED
 
 # Hangman Drawing Function 
 def draw_hangman(status):
@@ -110,15 +140,31 @@ def draw_hangman(status):
         pygame.draw.line(window, BLACK,
                          (offset_x + 175, offset_y + 30 + 25 + 90),
                          (offset_x + 175 + 20, offset_y + 30 + 25 + 130), 5)
-        
+
 # Drawing Game UI Elements
 def draw_score():
     score_text = LETTER_FONT.render(f"Wins: {wins}  Losses: {losses}", True, BLACK)
     window.blit(score_text, (20, 20))
 
+def draw_timer():
+    remaining_time = get_remaining_time()
+    time_text = format_time(remaining_time)
+    timer_color = get_timer_color(remaining_time)
+    
+    # Draw timer background
+    timer_bg_rect = pygame.Rect(WIDTH - 200, 20, 180, 60)
+    pygame.draw.rect(window, WHITE, timer_bg_rect, border_radius=10)
+    pygame.draw.rect(window, timer_color, timer_bg_rect, width=3, border_radius=10)
+    
+    # Draw timer text
+    timer_surface = TIMER_FONT.render(f"Time: {time_text}", True, timer_color)
+    timer_rect = timer_surface.get_rect(center=timer_bg_rect.center)
+    window.blit(timer_surface, timer_rect)
+
 def draw():
     window.fill(BG_COLOR)
     draw_score()
+    draw_timer()
 
     #title
     title_text = TITLE_FONT.render("HANGMAN", 1, BLACK)
@@ -219,11 +265,23 @@ def main_menu():
         game_title = TITLE_FONT.render("HANGMAN GAME", True, BLACK)
         window.blit(game_title, (WIDTH // 2 - game_title.get_width() // 2, 20))
         menu_title = WORD_FONT.render("Select Word Complexity", True, BLACK)
-        window.blit(menu_title, (WIDTH // 2 - menu_title.get_width() // 2, 250))
+        window.blit(menu_title, (WIDTH // 2 - menu_title.get_width() // 2, 200))
         
-        easy_rect   = pygame.Rect(WIDTH // 2 - 230, 400, 150, 50)
-        medium_rect = pygame.Rect(WIDTH // 2 - 50, 400, 150, 50)
-        hard_rect   = pygame.Rect(WIDTH // 2 + 130, 400, 150, 50)
+        # Display timer information for each difficulty
+        timer_info = LETTER_FONT.render("Timer Limits:", True, BLACK)
+        window.blit(timer_info, (WIDTH // 2 - timer_info.get_width() // 2, 280))
+        
+        easy_info = LETTER_FONT.render("Easy: 3:00", True, BLACK)
+        medium_info = LETTER_FONT.render("Medium: 2:00", True, BLACK)
+        hard_info = LETTER_FONT.render("Hard: 1:30", True, BLACK)
+        
+        window.blit(easy_info, (WIDTH // 2 - 230 + 75 - easy_info.get_width() // 2, 320))
+        window.blit(medium_info, (WIDTH // 2 + 25 - medium_info.get_width() // 2, 320))
+        window.blit(hard_info, (WIDTH // 2 + 205 - hard_info.get_width() // 2, 320))
+        
+        easy_rect   = pygame.Rect(WIDTH // 2 - 230, 360, 150, 50)
+        medium_rect = pygame.Rect(WIDTH // 2 - 50, 360, 150, 50)
+        hard_rect   = pygame.Rect(WIDTH // 2 + 130, 360, 150, 50)
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         for rect, text in [(easy_rect, "Easy"), (medium_rect, "Medium"), (hard_rect, "Hard")]:
@@ -248,22 +306,24 @@ def main_menu():
 
 #Main game loop
 def run_game():
-    global hangman_status, guessed, word, letters, wins, losses, difficulty
+    global hangman_status, guessed, word, letters, wins, losses, difficulty, start_time, time_limit
 
     # Reset game
     hangman_status = 0
     guessed = []
+    start_time = time.time()
+    time_limit = timer_limits[difficulty]
 
     if difficulty == "easy":
         filtered_words = [w for w in word_list if len(w) <= 6]
     elif difficulty == "medium":
         filtered_words = [w for w in word_list if 7 <= len(w) <= 8]
     elif difficulty == "hard":
-        filtered_words = [w for w in word_list if (len(w) >= 9 & len(w) <=12)]
+        filtered_words = [w for w in word_list if len(w) >= 9 and len(w) <= 12]
     else:
         filtered_words = word_list
     
-    word = random.choice(word_list)
+    word = random.choice(filtered_words)
     for letter in letters:
         letter[3] = True
 
@@ -274,6 +334,12 @@ def run_game():
     while run:
         clock.tick(FPS)
 
+        # Check if time is up
+        if get_remaining_time() <= 0:
+            losses += 1
+            result = display_message("Time's Up! You Lost.", reveal_word=word)
+            return result
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "quit"
@@ -283,7 +349,6 @@ def run_game():
                     if letter_char not in guessed:
                         guessed.append(letter_char)
                         if letter_char not in word:
-                            
                             hangman_status += 1
             if event.type == pygame.MOUSEBUTTONDOWN:
                 cursor_x, cursor_y = pygame.mouse.get_pos()
@@ -302,7 +367,9 @@ def run_game():
 
         if set(word).issubset(set(guessed)):
             wins += 1
-            result = display_message("You Won!", reveal_word=word)
+            remaining_time = get_remaining_time()
+            time_bonus_msg = f"Time Remaining: {format_time(remaining_time)}"
+            result = display_message("You Won!", reveal_word=f"{word} - {time_bonus_msg}")
             return result
 
         if hangman_status >= max_mistakes:
@@ -328,5 +395,16 @@ def main():
             else:
                 difficulty = new_diff
 
-main()
-pygame.quit()
+if __name__ == "__main__":
+    main()
+    pygame.quit()
+
+print("Hangman game with timer has been created!")
+print("\nTimer Features Added:")
+print("- Easy: 3 minutes")
+print("- Medium: 2 minutes") 
+print("- Hard: 1.5 minutes")
+print("- Color-coded timer (Green → Orange → Red)")
+print("- Time remaining display")
+print("- Game over when time runs out")
+print("- Timer resets for each new game")
