@@ -152,7 +152,7 @@ def draw_timer():
     timer_color = get_timer_color(remaining_time)
     
     # Draw timer background
-    timer_bg_rect = pygame.Rect(WIDTH - 200, 20, 180, 60)
+    timer_bg_rect = pygame.Rect(1270, 40, 200, 60)
     pygame.draw.rect(window, WHITE, timer_bg_rect, border_radius=10)
     pygame.draw.rect(window, timer_color, timer_bg_rect, width=3, border_radius=10)
     
@@ -196,10 +196,11 @@ def draw():
     pygame.display.update()
 
 #end game display
-def display_message(message, reveal_word=None):
+def display_message(message, reveal_word=None, time_remaining = None):
     global wins, losses
     main_text = WORD_FONT.render(message, 1, BLACK)
     word_text = WORD_FONT.render(f"The word was: {reveal_word}", True, BLACK) if reveal_word else None
+    time_text = WORD_FONT.render(f"Remaining Time: {time_remaining}", True, BLACK) if time_remaining else None
     
     button_width, button_height, gap_between = 150, 50, 30
     total_width = 3 * button_width + 2 * gap_between
@@ -221,6 +222,10 @@ def display_message(message, reveal_word=None):
         # revealed word 
         if word_text:
             window.blit(word_text, (WIDTH // 2 - word_text.get_width() // 2, 100))
+        
+        if time_remaining:
+            window.blit(time_text, (WIDTH // 2 - time_text.get_width() // 2, 200))
+            
 
         # Buttons
         restart_hover = restart_rect.collidepoint(mouse_x, mouse_y)
@@ -269,15 +274,15 @@ def main_menu():
         
         # Display timer information for each difficulty
         timer_info = LETTER_FONT.render("Timer Limits:", True, BLACK)
-        window.blit(timer_info, (WIDTH // 2 - timer_info.get_width() // 2, 280))
+        window.blit(timer_info, ((WIDTH // 2 - timer_info.get_width() // 2) + 30, 450))
         
         easy_info = LETTER_FONT.render("Easy: 3:00", True, BLACK)
         medium_info = LETTER_FONT.render("Medium: 2:00", True, BLACK)
         hard_info = LETTER_FONT.render("Hard: 1:30", True, BLACK)
         
-        window.blit(easy_info, (WIDTH // 2 - 230 + 75 - easy_info.get_width() // 2, 320))
-        window.blit(medium_info, (WIDTH // 2 + 25 - medium_info.get_width() // 2, 320))
-        window.blit(hard_info, (WIDTH // 2 + 205 - hard_info.get_width() // 2, 320))
+        window.blit(easy_info, (WIDTH // 2 - 230 + 75 - easy_info.get_width() // 2, 500))
+        window.blit(medium_info, (WIDTH // 2 + 25 - medium_info.get_width() // 2, 500))
+        window.blit(hard_info, (WIDTH // 2 + 205 - hard_info.get_width() // 2, 500))
         
         easy_rect   = pygame.Rect(WIDTH // 2 - 230, 360, 150, 50)
         medium_rect = pygame.Rect(WIDTH // 2 - 50, 360, 150, 50)
@@ -368,8 +373,8 @@ def run_game():
         if set(word).issubset(set(guessed)):
             wins += 1
             remaining_time = get_remaining_time()
-            time_bonus_msg = f"Time Remaining: {format_time(remaining_time)}"
-            result = display_message("You Won!", reveal_word=f"{word} - {time_bonus_msg}")
+            time_bonus_msg = format_time(remaining_time)
+            result = display_message("You Won!", reveal_word=f"{word}", time_remaining = f"{time_bonus_msg}")
             return result
 
         if hangman_status >= max_mistakes:
